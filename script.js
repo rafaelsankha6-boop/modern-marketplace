@@ -1,10 +1,51 @@
-let products = JSON.parse(localStorage.getItem("products")) || [];
+// LOAD DATA (with default products)
+let products = JSON.parse(localStorage.getItem("products")) || [
+  {
+    id: 1,
+    name: "Smartphone",
+    price: 500000,
+    image: "https://via.placeholder.com/150",
+    category: "electronics"
+  },
+  {
+    id: 2,
+    name: "Sneakers",
+    price: 80000,
+    image: "https://via.placeholder.com/150",
+    category: "fashion"
+  },
+  {
+    id: 3,
+    name: "Sofa",
+    price: 300000,
+    image: "https://via.placeholder.com/150",
+    category: "home"
+  }
+];
+
+// SAVE DEFAULT IF EMPTY
+if (!localStorage.getItem("products")) {
+  localStorage.setItem("products", JSON.stringify(products));
+}
+
 let cart = JSON.parse(localStorage.getItem("cart")) || [];
 let categories = JSON.parse(localStorage.getItem("categories")) || ["electronics","fashion","home"];
 
 let idCounter = products.length ? Math.max(...products.map(p=>p.id))+1 : 1;
 
+const pName = document.getElementById("pName");
+const pPrice = document.getElementById("pPrice");
+const pImage = document.getElementById("pImage");
+const pCategory = document.getElementById("pCategory");
+const newCategory = document.getElementById("newCategory");
+const filterCategory = document.getElementById("filterCategory");
+const searchInput = document.getElementById("searchInput");
+const cartItems = document.getElementById("cartItems");
+
+
 function updateCategories(){
+  if(!pCategory || !filterCategory) return;
+
   pCategory.innerHTML="";
   filterCategory.innerHTML="<option value='all'>All</option>";
 
@@ -14,6 +55,7 @@ function updateCategories(){
   });
 }
 
+
 function addCategory(){
   let c=newCategory.value.toLowerCase();
   if(!c) return;
@@ -22,14 +64,15 @@ function addCategory(){
   categories.push(c);
   localStorage.setItem("categories",JSON.stringify(categories));
   updateCategories();
-}
-
+  
 function displayProducts(){
   const container=document.getElementById("products");
+  if(!container) return;
+
   container.innerHTML="";
 
-  let search=searchInput.value.toLowerCase();
-  let filter=filterCategory.value;
+  let search = searchInput ? searchInput.value.toLowerCase() : "";
+  let filter = filterCategory ? filterCategory.value : "all";
 
   let filtered;
 
@@ -57,6 +100,7 @@ function displayProducts(){
   });
 }
 
+
 function addProduct(){
   let p={
     id:idCounter++,
@@ -77,17 +121,23 @@ function deleteProduct(id){
   displayProducts();
 }
 
+
 function addToCart(id){
   let item=cart.find(i=>i.id===id);
+
   if(item) item.qty++;
   else{
     let p=products.find(p=>p.id===id);
     cart.push({...p,qty:1});
   }
+
   updateCart();
 }
 
+
 function updateCart(){
+  if(!cartItems) return;
+
   cartItems.innerHTML="";
   let total=0;
 
@@ -103,16 +153,26 @@ function updateCart(){
     `;
   });
 
-  document.getElementById("total").innerText="Total: "+total+" TZS";
+  const totalEl = document.getElementById("total");
+  if(totalEl){
+    totalEl.innerText="Total: "+total+" TZS";
+  }
+
   localStorage.setItem("cart",JSON.stringify(cart));
 }
+
 
 function changeQty(id,c){
   let i=cart.find(x=>x.id===id);
   i.qty+=c;
-  if(i.qty<=0) cart=cart.filter(x=>x.id!==id);
+
+  if(i.qty<=0){
+    cart=cart.filter(x=>x.id!==id);
+  }
+
   updateCart();
 }
+
 
 function checkout(){
   alert("Order placed!");
@@ -120,18 +180,21 @@ function checkout(){
   updateCart();
 }
 
+
 function clearCart(){
   cart=[];
   updateCart();
 }
 
+
 function startNewShopping(){
   cart=[];
   updateCart();
 }
-
-filterCategory.addEventListener("change",displayProducts);
-
+if(filterCategory){
+  filterCategory.addEventListener("change",displayProducts);
+}
+  
 updateCategories();
 displayProducts();
 updateCart();
