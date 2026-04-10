@@ -1,50 +1,68 @@
-// ===== SAFE INIT =====
+
 let products = JSON.parse(localStorage.getItem("products"));
 
 if (!products || products.length === 0) {
   products = [
     {
       id: 1,
-      name: "Smartphone",
-      price: 500000,
-      image: "https://via.placeholder.com/150",
+      name: "iPhone 14 Pro",
+      price: 1200000,
+      image: "https://images.unsplash.com/photo-1510557880182-3d4d3cba35a5?w=500",
       category: "electronics"
     },
     {
       id: 2,
-      name: "Sneakers",
-      price: 80000,
-      image: "https://via.placeholder.com/150",
+      name: "Nike Sneakers",
+      price: 95000,
+      image: "https://images.unsplash.com/photo-1528701800489-20be3c6b3e6b?w=500",
       category: "fashion"
     },
     {
       id: 3,
-      name: "Sofa",
-      price: 300000,
-      image: "https://via.placeholder.com/150",
+      name: "Modern Sofa",
+      price: 450000,
+      image: "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?w=500",
       category: "home"
+    },
+    {
+      id: 4,
+      name: "Laptop Dell",
+      price: 1500000,
+      image: "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=500",
+      category: "electronics"
+    },
+    {
+      id: 5,
+      name: "Luxury Watch",
+      price: 60000,
+      image: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500",
+      category: "fashion"
     }
   ];
+
   localStorage.setItem("products", JSON.stringify(products));
-}
 
 let cart = JSON.parse(localStorage.getItem("cart")) || [];
-let categories = JSON.parse(localStorage.getItem("categories")) || ["electronics", "fashion", "home"];
+let categories = JSON.parse(localStorage.getItem("categories")) || [
+  "electronics",
+  "fashion",
+  "home"
+];
 
 let idCounter = products.length ? Math.max(...products.map(p => p.id)) + 1 : 1;
 
-// ===== ELEMENTS (SAFE CHECK) =====
+
+const container = document.getElementById("products");
+const cartItems = document.getElementById("cartItems");
+const searchInput = document.getElementById("searchInput");
+const filterCategory = document.getElementById("filterCategory");
 const pName = document.getElementById("pName");
 const pPrice = document.getElementById("pPrice");
 const pImage = document.getElementById("pImage");
 const pCategory = document.getElementById("pCategory");
 const newCategory = document.getElementById("newCategory");
-const filterCategory = document.getElementById("filterCategory");
-const searchInput = document.getElementById("searchInput");
-const cartItems = document.getElementById("cartItems");
-const container = document.getElementById("products");
 
-// ===== CATEGORIES =====
+
 function updateCategories() {
   if (!pCategory || !filterCategory) return;
 
@@ -56,8 +74,7 @@ function updateCategories() {
     filterCategory.innerHTML += `<option>${c}</option>`;
   });
 }
-
-// ===== ADD CATEGORY =====
+  
 function addCategory() {
   let c = newCategory?.value?.toLowerCase();
   if (!c) return;
@@ -68,7 +85,7 @@ function addCategory() {
   updateCategories();
 }
 
-// ===== DISPLAY PRODUCTS =====
+
 function displayProducts() {
   if (!container) return;
 
@@ -91,20 +108,18 @@ function displayProducts() {
   filtered.forEach(p => {
     container.innerHTML += `
       <div class="card">
-        <img src="${p.image}" width="150">
+        <img src="${p.image}" alt="${p.name}">
         <h4>${p.name}</h4>
-        <p>${p.price} TZS</p>
-        <button onclick="addToCart(${p.id})">Add</button>
+        <p>${p.price.toLocaleString()} TZS</p>
+        <button onclick="addToCart(${p.id})">Add to Cart</button>
         <button onclick="deleteProduct(${p.id})">Delete</button>
       </div>
     `;
   });
 }
 
-// ===== ADD PRODUCT =====
-function addProduct() {
-  if (!pName || !pPrice || !pImage || !pCategory) return;
 
+function addProduct() {
   let p = {
     id: idCounter++,
     name: pName.value,
@@ -118,14 +133,14 @@ function addProduct() {
   displayProducts();
 }
 
-// ===== DELETE PRODUCT =====
+
 function deleteProduct(id) {
   products = products.filter(p => p.id !== id);
   localStorage.setItem("products", JSON.stringify(products));
   displayProducts();
 }
 
-// ===== CART =====
+
 function addToCart(id) {
   let item = cart.find(i => i.id === id);
 
@@ -160,13 +175,13 @@ function updateCart() {
 
   const totalEl = document.getElementById("total");
   if (totalEl) {
-    totalEl.innerText = "Total: " + total + " TZS";
+    totalEl.innerText = "Total: " + total.toLocaleString() + " TZS";
   }
 
   localStorage.setItem("cart", JSON.stringify(cart));
 }
 
-// ===== CHANGE QTY =====
+
 function changeQty(id, c) {
   let i = cart.find(x => x.id === id);
   if (!i) return;
@@ -180,11 +195,11 @@ function changeQty(id, c) {
   updateCart();
 }
 
-// ===== EVENTS =====
+
 filterCategory?.addEventListener("change", displayProducts);
 searchInput?.addEventListener("input", displayProducts);
 
-// ===== INIT =====
+
 updateCategories();
 displayProducts();
 updateCart();
