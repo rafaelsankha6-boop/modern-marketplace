@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Sankha Digital Marketplace</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<header>
+<div class="slide-text">Wellcome Sankha Digital Tanzania Marketplace</div>
+</header>
+
+<div class="container">
+
+<div class="admin">
+<h3>Add Product</h3>
+<input type="text" id="pName" placeholder="Name">
+<input type="number" id="pPrice" placeholder="Price">
+<input type="text" id="pImage" placeholder="Image URL">
+<select id="pCategory"></select>
+<button onclick="addProduct()">Add</button>
+
+<hr>
+
+<h3>Add Category</h3>
+<input type="text" id="newCategory">
+<button onclick="addCategory()">Add Category</button>
+</div>
+
+<select id="filterCategory"></select>
+
+<input type="text" id="searchInput" placeholder="🔍 Search bidhaa..." onkeyup="displayProducts()" style="width:100%;padding:10px;">
+
+<div class="products" id="products"></div>
+
+</div>
+
+<div class="cart">
+<h3 style="padding:10px;">🛒 Cart</h3>
+<ul id="cartItems"></ul>
+<div id="total">Total: 0</div>
+
+<button onclick="checkout()">Checkout</button>
+<button onclick="clearCart()">Clear</button>
+<button onclick="startNewShopping()">New</button>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
